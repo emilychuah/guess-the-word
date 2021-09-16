@@ -22,14 +22,12 @@ const message = document.querySelector(".message");
 // The hidden button that will appear prompting the player to play again.
 const playAgainButton = document.querySelector(".play-again");
 
-const word = "magnolia"; // Magnolia is your starting word to test out the game until you fetch words from a hosted file in a later step.
+const word = "magnolia"; // Magnolia is the starting word to test out the game until you fetch words from a hosted file in a later step.
 
 // Display our symbols as placeholders for the chosen word's letters.
 const addPlaceholders = function () {
     const arrayOfLetters = word.split("");
-    //console.log(word.split(""));
     for (const letter of arrayOfLetters) {
-        //console.log(letter);
         wordInProgress.append("●");
     }
 };
