@@ -25,9 +25,8 @@ const playAgainButton = document.querySelector(".play-again");
 const word = "magnolia"; // Magnolia is the starting word to test out the game until you fetch words from a hosted file in a later step.
 
 // Display our symbols as placeholders for the chosen word's letters.
-const addPlaceholders = function () {
-    const arrayOfLetters = word.split("");
-    for (const letter of arrayOfLetters) {
+const addPlaceholders = function (word) {
+    for (const letter of word) { // Strings are similar to arrays with just a few differences. Thus, you can use loops right away without the need to actually convert it to an array here.
         wordInProgress.append("●");
     }
 };
@@ -36,7 +35,6 @@ addPlaceholders(word);
 
 guessLetterButton.addEventListener("click", function (e) {
     e.preventDefault(); // This is to prevent the default behavior of clicking a button, the form submitting, and then reloading the page.
-    const guess = letterInput.value;
-    console.log(guess);
+    console.log(letterInput.value);
     letterInput.value = "";
 });
