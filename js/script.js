@@ -34,7 +34,6 @@ const getWord = async function () {
     const wordArray = words.split("\n"); // Since each word is separated by a newline (\n), use that newline as a separator to split the string.
     const randomIndex = Math.floor(Math.random() * wordArray.length); // Pull a random index from the wordArray.
     word = wordArray[randomIndex].trim(); // Pull out a random word from the array based on the randomIndex. The trim() method removes whitespace from both sides of a string.
-    console.log(word);
     addPlaceholders(word);
     setGuessLimit(word);
 };
