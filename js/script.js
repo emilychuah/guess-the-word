@@ -23,9 +23,9 @@ const message = document.querySelector(".message");
 const playAgainButton = document.querySelector(".play-again");
 
 // Global variables
-let word = "magnolia"; // Magnolia is your starting word to test out the game until you fetch words from a hosted file in a later step.
-const guessedLetters = []; // This array will contain all the letters the player guesses. 
-let remainingGuesses = 8; // This is the maximum number of guesses the player can make.
+let word; // This variable is to be used in different functions.
+let guessedLetters = []; // This array will contain all the letters the player guesses. 
+let remainingGuesses; // This variable is to be used in different functions.
 
 // Async function
 const getWord = async function () {
@@ -34,13 +34,19 @@ const getWord = async function () {
     const wordArray = words.split("\n"); // Since each word is separated by a newline (\n), use that newline as a separator to split the string.
     const randomIndex = Math.floor(Math.random() * wordArray.length); // Pull a random index from the wordArray.
     word = wordArray[randomIndex].trim(); // Pull out a random word from the array based on the randomIndex. The trim() method removes whitespace from both sides of a string.
-    //console.log(word);
     addPlaceholders(word);
+    setGuessLimit(word);
 };
 
 getWord(); // Fire off the game.
 
-// Display our symbols as placeholders for the chosen word's letters.
+// Extra: Set the limit of guesses to change dynamically based on the number of letters in each chosen word.
+const setGuessLimit = function (word) {
+    remainingGuesses = word.length; // This can be changed based on the difficulty level set for the game.
+    remainingGuessesSpan.innerText = `${remainingGuesses} guesses`;
+};
+
+// Display circle symbols as placeholders for the chosen word's letters.
 const addPlaceholders = function (word) {
     const placeholderLetters = [];
     for (const letter of word) {
@@ -49,7 +55,7 @@ const addPlaceholders = function (word) {
     wordInProgress.innerText = placeholderLetters.join(""); // This is to convert the elements of the placeholderLetters array into a string.
 };
 
-// Add an event listener for the button.
+// Add an event listener for the Guess button.
 guessLetterButton.addEventListener("click", function (e) {
     e.preventDefault(); // This is to prevent the default behavior of clicking a button, the form submitting, and then reloading the page.
     message.innerText = ""; // Empty message paragraph.
@@ -117,7 +123,7 @@ const updateWordInProgress = function (guessedLetters) {
 
 // Count remaining guesses.
 const countRemainingGuesses = function (guess) {
-    const upperWord = word.toUpperCase(); // Because the player’s guess is uppercase, making the word they’re guessing uppercase will compare letters with the same casing.
+    const upperWord = word.toUpperCase(); // Since the player’s guess is uppercase, converting the word they’re guessing to uppercase will compare letters with the same casing.
     if (upperWord.includes(guess)) {
         message.innerText = `Good guess! The word has ${guess}.`;
     } else {
@@ -128,6 +134,7 @@ const countRemainingGuesses = function (guess) {
     if (remainingGuesses === 0) {
         message.innerHTML = `Game over! The word was <span class="highlight">${word}</span>.`;
         remainingGuessesSpan.innerText = `${remainingGuesses} guess`;
+        startOver();
     } else if (remainingGuesses === 1) {
         remainingGuessesSpan.innerText = `${remainingGuesses} guess`;
     } else {
@@ -139,6 +146,30 @@ const countRemainingGuesses = function (guess) {
 const checkIfWin = function () {
     if (wordInProgress.innerText === word.toUpperCase()) {
         message.classList.add("win");
-        message.innerHTML = '<p class="highlight">You guessed the correct word! Congratulations!</p>';
+        message.innerHTML = '<p class="highlight">You guessed the correct word! Congratulations! 🥳</p>';
+        startOver();
     }
 };
+
+// Reset the game.
+const startOver = function () {
+    guessLetterButton.classList.add("hide");
+    remainingGuessesElement.classList.add("hide");
+    guessedLettersElement.classList.add("hide");
+    playAgainButton.classList.remove("hide");
+};
+
+// Add an event listener for the Play Again button.
+playAgainButton.addEventListener("click", function () {
+    message.classList.remove("win");
+    guessedLetters = [];
+    guessedLettersElement.innerHTML = "";
+    message.innerText = "";
+
+    guessLetterButton.classList.remove("hide");
+    playAgainButton.classList.add("hide");
+    remainingGuessesElement.classList.remove("hide");
+    guessedLettersElement.classList.remove("hide");
+    
+    getWord();
+});
