@@ -34,6 +34,7 @@ const getWord = async function () {
     const wordArray = words.split("\n"); // Since each word is separated by a newline (\n), use that newline as a separator to split the string.
     const randomIndex = Math.floor(Math.random() * wordArray.length); // Pull a random index from the wordArray.
     word = wordArray[randomIndex].trim(); // Pull out a random word from the array based on the randomIndex. The trim() method removes whitespace from both sides of a string.
+    console.log(word);
     addPlaceholders(word);
     setGuessLimit(word);
 };
@@ -157,6 +158,7 @@ const startOver = function () {
     remainingGuessesElement.classList.add("hide");
     guessedLettersElement.classList.add("hide");
     playAgainButton.classList.remove("hide");
+    letterInput.disabled = true; // Extra: Disable the input text when game ends.
 };
 
 // Add an event listener for the Play Again button.
@@ -170,6 +172,7 @@ playAgainButton.addEventListener("click", function () {
     playAgainButton.classList.add("hide");
     remainingGuessesElement.classList.remove("hide");
     guessedLettersElement.classList.remove("hide");
+    letterInput.disabled = false; // Extra: Enable the input text when game restarts.
     
     getWord();
 });
