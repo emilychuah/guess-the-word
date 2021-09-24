@@ -1,76 +1,62 @@
-// The unordered list where the player’s guessed letters will appear.
 const guessedLettersElement = document.querySelector(".guessed-letters");
 
-// The button with the text “Guess!” in it.
 const guessLetterButton = document.querySelector(".guess");
 
-// The text input where the player will guess a letter.
 const letterInput = document.querySelector(".letter");
 
-// The empty paragraph where the word in progress will appear.
 const wordInProgress = document.querySelector(".word-in-progress");
 
-// The paragraph where the remaining guesses will display.
 const remainingGuessesElement = document.querySelector(".remaining");
 
-// The span inside the paragraph where the remaining guesses will display.
 const remainingGuessesSpan = document.querySelector(".remaining span");
 
-// The empty paragraph where messages will appear when the player guesses a letter.
 const message = document.querySelector(".message");
 
-// The hidden button that will appear prompting the player to play again.
 const playAgainButton = document.querySelector(".play-again");
 
-// Global variables
-let word; // This variable is to be used in different functions.
-let guessedLetters = []; // This array will contain all the letters the player guesses. 
-let remainingGuesses; // This variable is to be used in different functions.
+let word;  
+let guessedLetters = [];  
+let remainingGuesses;  
 
-// Async function
 const getWord = async function () {
     const response = await fetch("https://gist.githubusercontent.com/skillcrush-curriculum/7061f1d4d3d5bfe47efbfbcfe42bf57e/raw/5ffc447694486e7dea686f34a6c085ae371b43fe/words.txt");
-    const words = await response.text(); // The text() method of the response interface takes a response stream and reads it to completion. It returns a promise that resolves with a string.
-    const wordArray = words.split("\n"); // Since each word is separated by a newline (\n), use that newline as a separator to split the string.
-    const randomIndex = Math.floor(Math.random() * wordArray.length); // Pull a random index from the wordArray.
-    word = wordArray[randomIndex].trim(); // Pull out a random word from the array based on the randomIndex. The trim() method removes whitespace from both sides of a string.
+    const words = await response.text();  
+    const wordArray = words.split("\n");  
+    const randomIndex = Math.floor(Math.random() * wordArray.length);  
+    word = wordArray[randomIndex].trim();  
     addPlaceholders(word);
     setGuessLimit(word);
 };
 
-getWord(); // Fire off the game.
+getWord();  
 
-// Extra: Set the limit of guesses to change dynamically based on the number of letters in each chosen word.
 const setGuessLimit = function (word) {
-    remainingGuesses = word.length; // This can be changed based on the difficulty level set for the game.
+    remainingGuesses = word.length;  
     remainingGuessesSpan.innerText = `${remainingGuesses} guesses`;
 };
 
-// Display circle symbols as placeholders for the chosen word's letters.
 const addPlaceholders = function (word) {
     const placeholderLetters = [];
     for (const letter of word) {
         placeholderLetters.push("●");
     }
-    wordInProgress.innerText = placeholderLetters.join(""); // This is to convert the elements of the placeholderLetters array into a string.
+    wordInProgress.innerText = placeholderLetters.join("");  
 };
 
-// Add an event listener for the Guess button.
 guessLetterButton.addEventListener("click", function (e) {
-    e.preventDefault(); // This is to prevent the default behavior of clicking a button, the form submitting, and then reloading the page.
-    message.innerText = ""; // Empty message paragraph.
-    const guess = letterInput.value; // This grabs what was entered in the input.
-    const goodGuess = validateInput(guess); // This makes sure that it is a single letter.
+    e.preventDefault();  
+    message.innerText = "";  
+    const guess = letterInput.value;  
+    const goodGuess = validateInput(guess);  
     
-    if (goodGuess) { // We've got a letter! Let's guess!
+    if (goodGuess) {  
         makeGuess(guess);
     }
-    letterInput.value = ""; // This clears the input every time the button is clicked.
+    letterInput.value = "";  
 });
 
-// Check player's input.
 const validateInput = function (input) {
-    const acceptedLetter = /[a-zA-Z]/; // /[a-zA-Z]/ matches any character from lowercase a through uppercase Z.
+    const acceptedLetter = /[a-zA-Z]/;  
     if (input === "") { 
         message.innerText = "Please enter a letter.";
     } else if (input.length > 1) {  
@@ -82,9 +68,8 @@ const validateInput = function (input) {
     }
 };
 
-// Capture player's input.
 const makeGuess = function (guess) {
-    guess = guess.toUpperCase(); // Recommended to convert each letter to uppercase because JavaScript is case-sensitive and sees uppercase and lowercase letters as different characters.
+    guess = guess.toUpperCase();  
     if (guessedLetters.includes(guess)) {
         message.innerText = "You've guessed this letter. Please try again.";
     } else {
@@ -95,20 +80,18 @@ const makeGuess = function (guess) {
     }
 };
 
-// Display guessed letters on the page.
 const showGuessedLetters = function () {
-    guessedLettersElement.innerHTML = ""; // Empty the unordered list where the player's guessed letters will display, so that it prevents duplicated letters to appear.
+    guessedLettersElement.innerHTML = "";  
     for (const letter of guessedLetters) {
-        const li = document.createElement("li"); // Create a new list item for each letter.
+        const li = document.createElement("li");  
         li.innerText = letter; 
-        guessedLettersElement.append(li); // Add each letter to the unordered list.
+        guessedLettersElement.append(li);  
     }
 };
 
-// Replace the circle symbols with the correct letters guessed.
 const updateWordInProgress = function (guessedLetters) {
-    const wordUpper = word.toUpperCase(); // The word has to be converted to uppercase to match the guessed letters in uppercase.
-    const wordArray = wordUpper.split(""); // Split the word string into an array so that the letter can appear in the guessedLetters array.
+    const wordUpper = word.toUpperCase();  
+    const wordArray = wordUpper.split("");  
     const revealWord = [];
     for (const letter of wordArray) {
         if (guessedLetters.includes(letter)) {
@@ -121,9 +104,8 @@ const updateWordInProgress = function (guessedLetters) {
     checkIfWin();
 };
 
-// Count remaining guesses.
 const countRemainingGuesses = function (guess) {
-    const upperWord = word.toUpperCase(); // Since the player’s guess is uppercase, converting the word they’re guessing to uppercase will compare letters with the same casing.
+    const upperWord = word.toUpperCase();  
     if (upperWord.includes(guess)) {
         message.innerText = `Good guess! The word has ${guess}.`;
     } else {
@@ -142,7 +124,6 @@ const countRemainingGuesses = function (guess) {
     }
 };
 
-// Check if the player won.
 const checkIfWin = function () {
     if (wordInProgress.innerText === word.toUpperCase()) {
         message.classList.add("win");
@@ -151,16 +132,14 @@ const checkIfWin = function () {
     }
 };
 
-// Reset the game.
 const startOver = function () {
     guessLetterButton.classList.add("hide");
     remainingGuessesElement.classList.add("hide");
     guessedLettersElement.classList.add("hide");
     playAgainButton.classList.remove("hide");
-    letterInput.disabled = true; // Extra: Disable the input text when game ends.
+    letterInput.disabled = true;  
 };
 
-// Add an event listener for the Play Again button.
 playAgainButton.addEventListener("click", function () {
     message.classList.remove("win");
     guessedLetters = [];
@@ -171,7 +150,7 @@ playAgainButton.addEventListener("click", function () {
     playAgainButton.classList.add("hide");
     remainingGuessesElement.classList.remove("hide");
     guessedLettersElement.classList.remove("hide");
-    letterInput.disabled = false; // Extra: Enable the input text when game restarts.
+    letterInput.disabled = false;  
     
     getWord();
 });
